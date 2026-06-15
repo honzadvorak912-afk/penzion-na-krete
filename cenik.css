@@ -1,8 +1,12 @@
 /* cenik.css – styly pro stránku Ceník */
 
 .page-hero {
-  background: linear-gradient(rgba(30,22,16,.5), rgba(30,22,16,.5)),
-              url("images/phoca_thumb_l_P8182713.jpg") center/cover no-repeat;
+  background-color: #2b2622;
+  background-image: linear-gradient(rgba(30,22,16,.5), rgba(30,22,16,.5)),
+              url("images/phoca_thumb_l_P8182713.jpg");
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
   color: #fff;
   text-align: center;
   padding: 70px 20px;
@@ -43,12 +47,7 @@
   white-space: nowrap;
 }
 
-.notes {
-  max-width: 640px;
-  margin: 28px auto 0;
-  display: grid;
-  gap: 12px;
-}
+.notes { max-width: 640px; margin: 28px auto 0; display: grid; gap: 12px; }
 .note {
   display: flex;
   gap: 12px;
@@ -62,10 +61,7 @@
 .note .ico { color: var(--terracotta); font-weight: 700; flex: 0 0 auto; }
 .note.warn { background: #fbecdf; }
 
-.cta-mini {
-  text-align: center;
-  margin-top: 40px;
-}
+.cta-mini { text-align: center; margin-top: 40px; }
 
 @media (max-width: 600px) {
   .price-table td { padding: 14px 18px; }

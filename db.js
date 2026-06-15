@@ -34,6 +34,16 @@
     { ikona: "ℹ", text: "Od 1. 7. 2023 zavedlo Statutární město Pardubice <strong>poplatek z pobytu 30 Kč / osoba / noc</strong>, který není zahrnut v ceně." },
   ];
 
+  // Vrátí nejvyšší poradi+1 v dané tabulce (malé celé číslo)
+  async function nextPoradi(table) {
+    try {
+      const sb = await client();
+      const { data } = await sb.from(table).select("poradi").order("poradi", { ascending: false }).limit(1);
+      const max = (data && data[0] && Number(data[0].poradi)) || 0;
+      return max + 1;
+    } catch (e) { return 1; }
+  }
+
   const DB = {
     isConfigured: hasSupabase,
 
@@ -93,10 +103,11 @@
         return data;
       } catch (e) { console.warn("getPrices:", e); return DEFAULT_PRICES.map((p, i) => ({ id: "d" + i, ...p })); }
     },
-    async addPrice(popis, cena, poradi) {
+    async addPrice(popis, cena) {
       if (!hasSupabase) throw new Error("Supabase není nastaven.");
       const sb = await client();
-      const { error } = await sb.from(C.PRICE_TABLE).insert({ popis, cena, poradi: poradi || 0 });
+      const poradi = await nextPoradi(C.PRICE_TABLE);
+      const { error } = await sb.from(C.PRICE_TABLE).insert({ popis, cena, poradi });
       if (error) throw error;
     },
     async updatePrice(id, popis, cena) {
@@ -122,10 +133,11 @@
         return data;
       } catch (e) { console.warn("getNotes:", e); return DEFAULT_NOTES.map((p, i) => ({ id: "d" + i, ...p })); }
     },
-    async addNote(ikona, text, poradi) {
+    async addNote(ikona, text) {
       if (!hasSupabase) throw new Error("Supabase není nastaven.");
       const sb = await client();
-      const { error } = await sb.from(C.PRICE_NOTES_TABLE).insert({ ikona: ikona || "", text, poradi: poradi || 0 });
+      const poradi = await nextPoradi(C.PRICE_NOTES_TABLE);
+      const { error } = await sb.from(C.PRICE_NOTES_TABLE).insert({ ikona: ikona || "", text, poradi });
       if (error) throw error;
     },
     async updateNote(id, ikona, text) {

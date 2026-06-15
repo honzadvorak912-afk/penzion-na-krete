@@ -6,9 +6,13 @@
   display: flex;
   align-items: center;
   color: #fff;
-  background:
+  background-color: #2b2622;
+  background-image:
     linear-gradient(rgba(30,22,16,.55), rgba(30,22,16,.55)),
-    url("images/eaab3e021c64078638f8e36612029b47.jpg") center/cover no-repeat;
+    url("images/phoca_thumb_l_P8182664.jpg");
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
   text-align: center;
 }
 .hero-inner { max-width: 760px; margin: 0 auto; padding: 60px 20px; }
@@ -24,12 +28,7 @@
 .hero p { font-size: 1.15rem; color: #f1e9df; margin-bottom: 28px; }
 .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 
-/* Pruh s rychlými fakty */
-.facts {
-  margin-top: -42px;
-  position: relative;
-  z-index: 5;
-}
+.facts { margin-top: -42px; position: relative; z-index: 5; }
 .facts-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -43,7 +42,6 @@
 .fact b { display: block; font-size: 1.5rem; color: var(--terracotta); font-family: Georgia, serif; }
 .fact span { font-size: .9rem; color: var(--muted); }
 
-/* Sekce O penzionu */
 .section { padding: 64px 0; }
 .section-title { text-align: center; max-width: 680px; margin: 0 auto 40px; }
 .section-title .eyebrow {
@@ -61,7 +59,6 @@
 .about-text p { color: var(--muted); margin: 0 0 16px; }
 .about-img img { border-radius: var(--radius); box-shadow: var(--shadow); }
 
-/* Vybavení / služby */
 .features {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -79,7 +76,6 @@
 .feature h3 { font-size: 1.15rem; margin-bottom: 6px; }
 .feature p { color: var(--muted); font-size: .95rem; margin: 0; }
 
-/* CTA pruh */
 .cta {
   background: linear-gradient(135deg, var(--terracotta), var(--terracotta-dark));
   color: #fff;

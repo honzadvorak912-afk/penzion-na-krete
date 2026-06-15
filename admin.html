@@ -200,7 +200,7 @@
       const d=document.getElementById("newPriceDesc").value.trim();
       const v=document.getElementById("newPriceVal").value.trim();
       if(!d||!v){ s.className="pwd-status err"; s.textContent="Vyplňte popis i cenu."; return; }
-      try{ await DB.addPrice(d,v,Date.now());
+      try{ await DB.addPrice(d,v);
         document.getElementById("newPriceDesc").value=""; document.getElementById("newPriceVal").value="";
         s.className="pwd-status ok"; s.textContent="Řádek přidán."; renderPrices();
       }catch(e){ s.className="pwd-status err"; s.textContent="Chyba: "+(e.message||e); }
@@ -237,7 +237,7 @@
       const icon=document.getElementById("newNoteIcon").value.trim();
       const text=document.getElementById("newNoteText").value.trim();
       if(!text){ s.className="pwd-status err"; s.textContent="Vyplňte text poznámky."; return; }
-      try{ await DB.addNote(icon,text,Date.now());
+      try{ await DB.addNote(icon,text);
         document.getElementById("newNoteIcon").value=""; document.getElementById("newNoteText").value="";
         s.className="pwd-status ok"; s.textContent="Poznámka přidána."; renderNotes();
       }catch(e){ s.className="pwd-status err"; s.textContent="Chyba: "+(e.message||e); }
