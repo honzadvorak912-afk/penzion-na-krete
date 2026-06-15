@@ -183,7 +183,11 @@
         const get=f=>row.querySelector('[data-f="'+f+'"]').value.trim();
         row.querySelector('[data-act="save"]').addEventListener("click", async ()=>{
           const s=document.getElementById("priceStatus"); if(needSupabase(s)) return;
-          try{ await DB.updatePrice(p.id,get("popis"),get("cena")); s.className="pwd-status ok"; s.textContent="Uloženo."; renderPrices(); }
+          try{
+            if(isD){ await DB.addPrice(get("popis"),get("cena")); }
+            else { await DB.updatePrice(p.id,get("popis"),get("cena")); }
+            s.className="pwd-status ok"; s.textContent="Uloženo."; renderPrices();
+          }
           catch(e){ s.className="pwd-status err"; s.textContent="Chyba: "+(e.message||e); }
         });
         row.querySelector('[data-act="del"]').addEventListener("click", async ()=>{
@@ -220,7 +224,11 @@
         const get=f=>row.querySelector('[data-f="'+f+'"]').value;
         row.querySelector('[data-act="save"]').addEventListener("click", async ()=>{
           const s=document.getElementById("noteStatus"); if(needSupabase(s)) return;
-          try{ await DB.updateNote(n.id,get("ikona").trim(),get("text").trim()); s.className="pwd-status ok"; s.textContent="Uloženo."; renderNotes(); }
+          try{
+            if(isD){ await DB.addNote(get("ikona").trim(),get("text").trim()); }
+            else { await DB.updateNote(n.id,get("ikona").trim(),get("text").trim()); }
+            s.className="pwd-status ok"; s.textContent="Uloženo."; renderNotes();
+          }
           catch(e){ s.className="pwd-status err"; s.textContent="Chyba: "+(e.message||e); }
         });
         row.querySelector('[data-act="del"]').addEventListener("click", async ()=>{
