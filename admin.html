@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Administrace – Penzion na Krétě</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="base.css" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body class="admin-body">
+
+  <div id="loginView">
+    <div class="login-box">
+      <div class="brand-mark">K</div>
+      <h2>Administrace</h2>
+      <p class="sub" style="color:var(--muted);font-size:.9rem;">Zadejte heslo pro pokračování</p>
+      <input type="password" id="pwdInput" placeholder="Heslo" autocomplete="current-password" />
+      <button class="btn" id="loginBtn">Přihlásit se</button>
+      <div class="login-error" id="loginError"></div>
+    </div>
+  </div>
+
+  <div id="adminView" class="hidden">
+    <div class="admin-top">
+      <div class="container inner">
+        <h1>🏠 Administrace · Penzion na Krétě</h1>
+        <div>
+          <a href="fotogalerie.html" target="_blank">Zobrazit web ↗</a>
+          <button id="logoutBtn">Odhlásit</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-main">
+      <div class="container">
+
+        <div id="configWarn" class="config-warn hidden">
+          ⚠️ <strong>Supabase není nastaven.</strong> Změny se zatím ukládají jen v tomto prohlížeči.
+          Vyplňte klíče v <code>config.js</code> – návod v <code>NAVOD.md</code>.
+        </div>
+
+        <div class="panel">
+          <h2>Přidat fotky</h2>
+          <p class="sub">Nahrajte jednu nebo více fotek. Po nahrání se ihned objeví ve fotogalerii.</p>
+          <label class="dropzone" id="dropzone">
+            <input type="file" id="fileInput" accept="image/*" multiple />
+            <span class="dz-icon">📷</span>
+            <span class="dz-main">Klikněte nebo přetáhněte fotky sem</span>
+            <span class="dz-sub">JPG, PNG · více souborů najednou</span>
+          </label>
+          <div class="upload-status" id="uploadStatus"></div>
+        </div>
+
+        <div class="panel">
+          <h2>Fotky v galerii</h2>
+          <p class="sub">Kliknutím na ✕ fotku odeberete.</p>
+          <div class="admin-grid" id="adminGrid"><p style="color:var(--muted)">Načítám…</p></div>
+        </div>
+
+        <div class="panel">
+          <h2>Ceník – ceny pokojů</h2>
+          <p class="sub">Upravte popis a cenu, smažte řádek nebo přidejte nový. Změny se projeví ihned na webu.</p>
+          <div id="priceList"></div>
+          <div class="row" style="margin-top:16px;">
+            <div class="field"><label>Nový popis</label><input type="text" id="newPriceDesc" placeholder="např. 4lůžkový pokoj" /></div>
+            <div class="field" style="max-width:160px;flex:0 0 140px;"><label>Cena</label><input type="text" id="newPriceVal" placeholder="např. 1 800 Kč" /></div>
+            <button class="btn" id="addPriceBtn">Přidat řádek</button>
+          </div>
+          <div class="pwd-status" id="priceStatus"></div>
+        </div>
+
+        <div class="panel">
+          <h2>Ceník – poznámky</h2>
+          <p class="sub">Doplňující informace pod tabulkou (poplatek z pobytu, mazlíčci…). Lze upravovat, mazat i přidávat. V textu lze použít &lt;strong&gt;…&lt;/strong&gt; pro tučné.</p>
+          <div id="noteList"></div>
+          <div class="row" style="margin-top:16px;">
+            <div class="field" style="max-width:90px;flex:0 0 80px;"><label>Ikona</label><input type="text" id="newNoteIcon" placeholder="ℹ" /></div>
+            <div class="field"><label>Text poznámky</label><input type="text" id="newNoteText" placeholder="Text nové poznámky…" /></div>
+            <button class="btn" id="addNoteBtn">Přidat poznámku</button>
+          </div>
+          <div class="pwd-status" id="noteStatus"></div>
+        </div>
+
+        <div class="panel">
+          <h2>Změna hesla</h2>
+          <p class="sub">Nastavte si nové heslo do administrace.</p>
+          <div class="row">
+            <div class="field"><label for="newPwd">Nové heslo</label><input type="password" id="newPwd" autocomplete="new-password" /></div>
+            <div class="field"><label for="newPwd2">Nové heslo znovu</label><input type="password" id="newPwd2" autocomplete="new-password" /></div>
+            <button class="btn" id="changePwdBtn">Uložit heslo</button>
+          </div>
+          <div class="pwd-status" id="pwdStatus"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="db.js"></script>
+  <script>
+    const loginView = document.getElementById("loginView");
+    const adminView = document.getElementById("adminView");
+    const SESSION_KEY = "penzion_admin_session";
+
+    function escAttr(s){ return (s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+    function needSupabase(el){ if(!DB.isConfigured){ el.className="pwd-status err"; el.textContent="Tato funkce vyžaduje nastavený Supabase."; return true; } return false; }
+
+    async function tryLogin(pwd){ return pwd === (await DB.getPassword()); }
+    async function doLogin(){
+      const err = document.getElementById("loginError"); err.textContent="";
+      const pwd = document.getElementById("pwdInput").value;
+      if(!pwd){ err.textContent="Zadejte heslo."; return; }
+      if(await tryLogin(pwd)){ sessionStorage.setItem(SESSION_KEY,"1"); showAdmin(); }
+      else err.textContent="Nesprávné heslo.";
+    }
+    document.getElementById("loginBtn").addEventListener("click", doLogin);
+    document.getElementById("pwdInput").addEventListener("keydown", e=>{ if(e.key==="Enter") doLogin(); });
+    document.getElementById("logoutBtn").addEventListener("click", ()=>{
+      sessionStorage.removeItem(SESSION_KEY);
+      adminView.classList.add("hidden"); loginView.classList.remove("hidden");
+      document.getElementById("pwdInput").value="";
+    });
+
+    function showAdmin(){
+      loginView.classList.add("hidden"); adminView.classList.remove("hidden");
+      if(!DB.isConfigured) document.getElementById("configWarn").classList.remove("hidden");
+      renderGrid(); renderPrices(); renderNotes();
+    }
+
+    async function renderGrid(){
+      const grid = document.getElementById("adminGrid");
+      grid.innerHTML = '<p style="color:var(--muted)">Načítám…</p>';
+      let photos=[]; try{ photos=await DB.getPhotos(); }catch(e){}
+      if(!photos.length){ grid.innerHTML='<p style="color:var(--muted)">Zatím žádné fotky.</p>'; return; }
+      grid.innerHTML="";
+      photos.forEach(p=>{
+        const isD=String(p.id).startsWith("default-");
+        const div=document.createElement("div"); div.className="admin-thumb";
+        div.innerHTML='<img src="'+p.url+'" alt="foto">'+(isD?'<span class="thumb-badge">výchozí</span>':'<button class="del" title="Odebrat">✕</button>');
+        if(!isD) div.querySelector(".del").addEventListener("click", ()=>removePhoto(p));
+        grid.appendChild(div);
+      });
+    }
+    async function removePhoto(p){
+      if(!DB.isConfigured){ alert("Vyžaduje Supabase."); return; }
+      if(!confirm("Opravdu odebrat tuto fotku?")) return;
+      try{ await DB.deletePhoto(p); renderGrid(); }catch(e){ alert("Odebrání selhalo: "+(e.message||e)); }
+    }
+
+    const dropzone=document.getElementById("dropzone");
+    const fileInput=document.getElementById("fileInput");
+    const uploadStatus=document.getElementById("uploadStatus");
+    fileInput.addEventListener("change", ()=>handleFiles(fileInput.files));
+    dropzone.addEventListener("dragover", e=>{ e.preventDefault(); dropzone.classList.add("drag"); });
+    dropzone.addEventListener("dragleave", ()=>dropzone.classList.remove("drag"));
+    dropzone.addEventListener("drop", e=>{ e.preventDefault(); dropzone.classList.remove("drag"); handleFiles(e.dataTransfer.files); });
+    async function handleFiles(files){
+      if(!files||!files.length) return;
+      if(!DB.isConfigured){ uploadStatus.className="upload-status err"; uploadStatus.textContent="Nahrávání vyžaduje Supabase."; return; }
+      uploadStatus.className="upload-status"; let done=0; const list=Array.from(files);
+      for(const f of list){
+        uploadStatus.textContent="Nahrávám "+(done+1)+" z "+list.length+"…";
+        try{ await DB.addPhoto(f); done++; }
+        catch(e){ uploadStatus.className="upload-status err"; uploadStatus.textContent="Chyba: "+(e.message||e); return; }
+      }
+      uploadStatus.className="upload-status ok"; uploadStatus.textContent="Hotovo – nahráno "+done+" fotek.";
+      fileInput.value=""; renderGrid();
+    }
+
+    async function renderPrices(){
+      const box=document.getElementById("priceList");
+      box.innerHTML='<p style="color:var(--muted)">Načítám…</p>';
+      const prices=await DB.getPrices(); box.innerHTML="";
+      prices.forEach(p=>{
+        const isD=String(p.id).startsWith("d");
+        const row=document.createElement("div"); row.className="row"; row.style.marginBottom="10px";
+        row.innerHTML='<div class="field"><input type="text" value="'+escAttr(p.popis)+'" data-f="popis"></div>'+
+          '<div class="field" style="max-width:160px;flex:0 0 140px;"><input type="text" value="'+escAttr(p.cena)+'" data-f="cena"></div>'+
+          '<button class="btn" data-act="save" style="padding:11px 16px;">Uložit</button>'+
+          '<button class="btn" data-act="del" style="padding:11px 16px;background:#c62828;">Smazat</button>';
+        const get=f=>row.querySelector('[data-f="'+f+'"]').value.trim();
+        row.querySelector('[data-act="save"]').addEventListener("click", async ()=>{
+          const s=document.getElementById("priceStatus"); if(needSupabase(s)) return;
+          try{ await DB.updatePrice(p.id,get("popis"),get("cena")); s.className="pwd-status ok"; s.textContent="Uloženo."; renderPrices(); }
+          catch(e){ s.className="pwd-status err"; s.textContent="Chyba: "+(e.message||e); }
+        });
+        row.querySelector('[data-act="del"]').addEventListener("click", async ()=>{
+          const s=document.getElementById("priceStatus"); if(needSupabase(s)) return;
+          if(isD){ s.className="pwd-status err"; s.textContent="Výchozí řádek nelze smazat – nejdřív přidejte vlastní ceny."; return; }
+          if(!confirm("Smazat tento řádek ceníku?")) return;
+          try{ await DB.deletePrice(p.id); renderPrices(); }catch(e){ s.className="pwd-status err"; s.textContent="Chyba: "+(e.message||e); }
+        });
+        box.appendChild(row);
+      });
+    }
+    document.getElementById("addPriceBtn").addEventListener("click", async ()=>{
+      const s=document.getElementById("priceStatus"); if(needSupabase(s)) return;
+      const d=document.getElementById("newPriceDesc").value.trim();
+      const v=document.getElementById("newPriceVal").value.trim();
+      if(!d||!v){ s.className="pwd-status err"; s.textContent="Vyplňte popis i cenu."; return; }
+      try{ await DB.addPrice(d,v,Date.now());
+        document.getElementById("newPriceDesc").value=""; document.getElementById("newPriceVal").value="";
+        s.className="pwd-status ok"; s.textContent="Řádek přidán."; renderPrices();
+      }catch(e){ s.className="pwd-status err"; s.textContent="Chyba: "+(e.message||e); }
+    });
+
+    async function renderNotes(){
+      const box=document.getElementById("noteList");
+      box.innerHTML='<p style="color:var(--muted)">Načítám…</p>';
+      const notes=await DB.getNotes(); box.innerHTML="";
+      notes.forEach(n=>{
+        const isD=String(n.id).startsWith("d");
+        const row=document.createElement("div"); row.className="row"; row.style.marginBottom="10px";
+        row.innerHTML='<div class="field" style="max-width:90px;flex:0 0 80px;"><input type="text" value="'+escAttr(n.ikona)+'" data-f="ikona"></div>'+
+          '<div class="field"><input type="text" value="'+escAttr(n.text)+'" data-f="text"></div>'+
+          '<button class="btn" data-act="save" style="padding:11px 16px;">Uložit</button>'+
+          '<button class="btn" data-act="del" style="padding:11px 16px;background:#c62828;">Smazat</button>';
+        const get=f=>row.querySelector('[data-f="'+f+'"]').value;
+        row.querySelector('[data-act="save"]').addEventListener("click", async ()=>{
+          const s=document.getElementById("noteStatus"); if(needSupabase(s)) return;
+          try{ await DB.updateNote(n.id,get("ikona").trim(),get("text").trim()); s.className="pwd-status ok"; s.textContent="Uloženo."; renderNotes(); }
+          catch(e){ s.className="pwd-status err"; s.textContent="Chyba: "+(e.message||e); }
+        });
+        row.querySelector('[data-act="del"]').addEventListener("click", async ()=>{
+          const s=document.getElementById("noteStatus"); if(needSupabase(s)) return;
+          if(isD){ s.className="pwd-status err"; s.textContent="Výchozí poznámku nelze smazat – nejdřív přidejte vlastní."; return; }
+          if(!confirm("Smazat tuto poznámku?")) return;
+          try{ await DB.deleteNote(n.id); renderNotes(); }catch(e){ s.className="pwd-status err"; s.textContent="Chyba: "+(e.message||e); }
+        });
+        box.appendChild(row);
+      });
+    }
+    document.getElementById("addNoteBtn").addEventListener("click", async ()=>{
+      const s=document.getElementById("noteStatus"); if(needSupabase(s)) return;
+      const icon=document.getElementById("newNoteIcon").value.trim();
+      const text=document.getElementById("newNoteText").value.trim();
+      if(!text){ s.className="pwd-status err"; s.textContent="Vyplňte text poznámky."; return; }
+      try{ await DB.addNote(icon,text,Date.now());
+        document.getElementById("newNoteIcon").value=""; document.getElementById("newNoteText").value="";
+        s.className="pwd-status ok"; s.textContent="Poznámka přidána."; renderNotes();
+      }catch(e){ s.className="pwd-status err"; s.textContent="Chyba: "+(e.message||e); }
+    });
+
+    document.getElementById("changePwdBtn").addEventListener("click", async ()=>{
+      const s=document.getElementById("pwdStatus");
+      const a=document.getElementById("newPwd").value, b=document.getElementById("newPwd2").value;
+      s.className="pwd-status";
+      if(!a||a.length<4){ s.className="pwd-status err"; s.textContent="Heslo musí mít alespoň 4 znaky."; return; }
+      if(a!==b){ s.className="pwd-status err"; s.textContent="Hesla se neshodují."; return; }
+      try{ await DB.setPassword(a); s.className="pwd-status ok";
+        s.textContent=DB.isConfigured?"Heslo bylo změněno (platí na všech zařízeních).":"Heslo bylo změněno (jen v tomto prohlížeči).";
+        document.getElementById("newPwd").value=""; document.getElementById("newPwd2").value="";
+      }catch(e){ s.className="pwd-status err"; s.textContent="Změna selhala: "+(e.message||e); }
+    });
+
+    if(sessionStorage.getItem(SESSION_KEY)==="1") showAdmin();
+  </script>
+</body>
+</html>

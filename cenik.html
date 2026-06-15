@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ceník ubytování – Penzion na Krétě Pardubice</title>
+  <meta name="description" content="Ceník ubytování v Penzionu na Krétě v Pardubicích. Pokoje od 800 Kč za noc včetně DPH." />
+  <link rel="stylesheet" href="base.css" />
+  <link rel="stylesheet" href="cenik.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">K</span>
+        <span class="brand-text">
+          <strong>Penzion na Krétě</strong>
+          <span>levné ubytování · Pardubice</span>
+        </span>
+      </a>
+      <button class="burger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html">Domů</a></li>
+          <li><a href="cenik.html" class="active">Ceník</a></li>
+          <li><a href="fotogalerie.html">Fotogalerie</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <h1>Ceník ubytování</h1>
+    <p>Ceny jsou uvedeny za pokoj a již obsahují 12 % DPH.</p>
+  </section>
+
+  <section class="price-wrap">
+    <div class="container">
+      <div class="price-card">
+        <div class="head">
+          <h2>Ceny pokojů</h2>
+          <span>za pokoj / noc · včetně 12 % DPH</span>
+        </div>
+        <table class="price-table">
+          <tbody id="priceBody">
+            <tr><td colspan="2" style="text-align:center;color:var(--muted)">Načítám…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="notes" id="notesBox"></div>
+
+      <div class="cta-mini">
+        <a href="kontakt.html" class="btn">Rezervovat pokoj</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <h3>Penzion na Krétě</h3>
+        <p>Levné a útulné ubytování s restaurací blízko centra Pardubic.</p>
+      </div>
+      <div>
+        <h3>Kontakt</h3>
+        <p>Tolarova 243, Pardubice<br />
+        Tel: <a href="tel:+420777602540">777 602 540</a><br />
+        <a href="mailto:info@penzion-nakrete.cz">info@penzion-nakrete.cz</a></p>
+      </div>
+      <div>
+        <h3>Menu</h3>
+        <p><a href="index.html">Domů</a><br />
+        <a href="cenik.html">Ceník</a><br />
+        <a href="fotogalerie.html">Fotogalerie</a><br />
+        <a href="kontakt.html">Kontakt</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom container">
+      © <span data-year></span> Penzion na Krétě · Pardubická realitní s.r.o.
+    </div>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="db.js"></script>
+  <script src="site.js"></script>
+  <script>
+    function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+    function safeNote(t){
+      return esc(t).replace(/&lt;strong&gt;/g,"<strong>").replace(/&lt;\/strong&gt;/g,"</strong>");
+    }
+    async function loadCenik(){
+      const body = document.getElementById("priceBody");
+      const notes = document.getElementById("notesBox");
+      const [prices, ns] = await Promise.all([DB.getPrices(), DB.getNotes()]);
+      body.innerHTML = prices.length
+        ? prices.map(p => "<tr><td>"+esc(p.popis)+"</td><td>"+esc(p.cena)+"</td></tr>").join("")
+        : '<tr><td colspan="2" style="text-align:center;color:var(--muted)">Ceník zatím není vyplněn.</td></tr>';
+      notes.innerHTML = ns.map(n => {
+        const warn = /poplatek|není zahrnut/i.test(n.text) ? " warn" : "";
+        return '<div class="note'+warn+'"><span class="ico">'+esc(n.ikona)+'</span><span>'+safeNote(n.text)+'</span></div>';
+      }).join("");
+    }
+    loadCenik();
+  </script>
+</body>
+</html>

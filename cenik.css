@@ -1,0 +1,72 @@
+/* cenik.css – styly pro stránku Ceník */
+
+.page-hero {
+  background: linear-gradient(rgba(30,22,16,.5), rgba(30,22,16,.5)),
+              url("images/phoca_thumb_l_P8182713.jpg") center/cover no-repeat;
+  color: #fff;
+  text-align: center;
+  padding: 70px 20px;
+}
+.page-hero h1 { color: #fff; font-size: clamp(2rem, 4vw, 3rem); }
+.page-hero p { color: #f1e9df; max-width: 620px; margin: 0 auto; }
+
+.price-wrap { padding: 64px 0; }
+
+.price-card {
+  max-width: 640px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.price-card .head {
+  background: linear-gradient(135deg, var(--terracotta), var(--terracotta-dark));
+  color: #fff;
+  padding: 22px 28px;
+  text-align: center;
+}
+.price-card .head h2 { color: #fff; margin: 0; }
+.price-card .head span { font-size: .9rem; color: #f6e3da; }
+
+.price-table { width: 100%; border-collapse: collapse; }
+.price-table tr { border-bottom: 1px solid var(--line); }
+.price-table tr:last-child { border-bottom: none; }
+.price-table td { padding: 18px 28px; font-size: 1.05rem; }
+.price-table td:first-child { font-weight: 600; }
+.price-table td:last-child {
+  text-align: right;
+  font-weight: 700;
+  color: var(--terracotta);
+  font-size: 1.2rem;
+  white-space: nowrap;
+}
+
+.notes {
+  max-width: 640px;
+  margin: 28px auto 0;
+  display: grid;
+  gap: 12px;
+}
+.note {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--sand);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: .98rem;
+  color: var(--ink);
+}
+.note .ico { color: var(--terracotta); font-weight: 700; flex: 0 0 auto; }
+.note.warn { background: #fbecdf; }
+
+.cta-mini {
+  text-align: center;
+  margin-top: 40px;
+}
+
+@media (max-width: 600px) {
+  .price-table td { padding: 14px 18px; }
+}

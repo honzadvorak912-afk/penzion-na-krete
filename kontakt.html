@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kontakt – Penzion na Krétě Pardubice</title>
+  <meta name="description" content="Kontakt na Penzion na Krétě: Tolarova 243, Pardubice, tel. 777 602 540, info@penzion-nakrete.cz." />
+  <link rel="stylesheet" href="base.css" />
+  <link rel="stylesheet" href="kontakt.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">K</span>
+        <span class="brand-text">
+          <strong>Penzion na Krétě</strong>
+          <span>levné ubytování · Pardubice</span>
+        </span>
+      </a>
+      <button class="burger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html">Domů</a></li>
+          <li><a href="cenik.html">Ceník</a></li>
+          <li><a href="fotogalerie.html">Fotogalerie</a></li>
+          <li><a href="kontakt.html" class="active">Kontakt</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <h1>Kontakt</h1>
+    <p>Rádi vám pomůžeme s rezervací i jakýmkoli dotazem.</p>
+  </section>
+
+  <section class="contact-wrap">
+    <div class="container">
+      <div class="contact-grid">
+
+        <!-- Kontaktní info -->
+        <div class="info-card">
+          <h2>Spojte se s námi</h2>
+          <div class="info-item">
+            <span class="ico">📍</span>
+            <div><b>Adresa</b><span>Tolarova 243, Pardubice</span></div>
+          </div>
+          <div class="info-item">
+            <span class="ico">📞</span>
+            <div><b>Telefon</b><a href="tel:+420777602540">777 602 540</a></div>
+          </div>
+          <div class="info-item">
+            <span class="ico">✉️</span>
+            <div><b>E-mail</b><a href="mailto:info@penzion-nakrete.cz">info@penzion-nakrete.cz</a></div>
+          </div>
+          <div class="info-item">
+            <span class="ico">🅿️</span>
+            <div><b>Parkování</b><span>Zdarma v uzavřeném střeženém areálu</span></div>
+          </div>
+        </div>
+
+        <!-- Formulář (Formspree) -->
+        <div class="form-card">
+          <h2>Napište nám</h2>
+          <form id="contactForm" action="https://formspree.io/f/xgobdvwj" method="POST">
+            <div class="field">
+              <label for="name">Jméno</label>
+              <input type="text" id="name" name="jmeno" required />
+            </div>
+            <div class="field">
+              <label for="email">E-mail</label>
+              <input type="email" id="email" name="email" required />
+            </div>
+            <div class="field">
+              <label for="phone">Telefon (nepovinné)</label>
+              <input type="tel" id="phone" name="telefon" />
+            </div>
+            <div class="field">
+              <label for="message">Zpráva</label>
+              <textarea id="message" name="zprava" required></textarea>
+            </div>
+            <button type="submit" class="btn">Odeslat zprávu</button>
+            <div class="form-status" id="formStatus"></div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Mapa -->
+      <div class="map-embed">
+        <iframe
+          title="Mapa – Penzion na Krétě"
+          src="https://www.google.com/maps?q=Tolarova%20243%2C%20Pardubice&output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+
+      <p class="legal">
+        Penzion provozuje Pardubická realitní s.r.o., DIČ: CZ25936204, zapsaná v o.r. KS HK oddíl C, vl. 15930.<br />
+        Hades Real a.s., DIČ: CZ25291564, zapsaná v o.r. KS HK oddíl B, vl. 1819.<br />
+        Vepa a.s., DIČ: CZ25291271, zapsaná v o.r. KS HK oddíl B, vl. 1827.
+      </p>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <h3>Penzion na Krétě</h3>
+        <p>Levné a útulné ubytování s restaurací blízko centra Pardubic.</p>
+      </div>
+      <div>
+        <h3>Kontakt</h3>
+        <p>Tolarova 243, Pardubice<br />
+        Tel: <a href="tel:+420777602540">777 602 540</a><br />
+        <a href="mailto:info@penzion-nakrete.cz">info@penzion-nakrete.cz</a></p>
+      </div>
+      <div>
+        <h3>Menu</h3>
+        <p><a href="index.html">Domů</a><br />
+        <a href="cenik.html">Ceník</a><br />
+        <a href="fotogalerie.html">Fotogalerie</a><br />
+        <a href="kontakt.html">Kontakt</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom container">
+      © <span data-year></span> Penzion na Krétě · Pardubická realitní s.r.o.
+    </div>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="site.js"></script>
+  <script>
+    // Odeslání formuláře přes Formspree bez opuštění stránky (AJAX)
+    const form = document.getElementById("contactForm");
+    const status = document.getElementById("formStatus");
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      status.textContent = "Odesílám…";
+      status.className = "form-status";
+      try {
+        const res = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        if (res.ok) {
+          status.textContent = "Děkujeme! Vaše zpráva byla odeslána.";
+          status.className = "form-status ok";
+          form.reset();
+        } else {
+          throw new Error("send failed");
+        }
+      } catch (err) {
+        status.textContent = "Zprávu se nepodařilo odeslat. Zkuste to prosím znovu, nebo nám zavolejte.";
+        status.className = "form-status err";
+      }
+    });
+  </script>
+</body>
+</html>
