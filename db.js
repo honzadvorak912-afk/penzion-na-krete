@@ -93,6 +93,24 @@
       if (error) throw error;
     },
 
+    // Pokud je tabulka prázdná, vloží výchozí hodnoty (aby je šlo v adminu upravovat)
+    async seedPricesIfEmpty() {
+      if (!hasSupabase) return;
+      const sb = await client();
+      const { data } = await sb.from(C.PRICE_TABLE).select("id").limit(1);
+      if (data && data.length) return;
+      const rows = DEFAULT_PRICES.map((p, i) => ({ popis: p.popis, cena: p.cena, poradi: i + 1 }));
+      await sb.from(C.PRICE_TABLE).insert(rows);
+    },
+    async seedNotesIfEmpty() {
+      if (!hasSupabase) return;
+      const sb = await client();
+      const { data } = await sb.from(C.PRICE_NOTES_TABLE).select("id").limit(1);
+      if (data && data.length) return;
+      const rows = DEFAULT_NOTES.map((p, i) => ({ ikona: p.ikona, text: p.text, poradi: i + 1 }));
+      await sb.from(C.PRICE_NOTES_TABLE).insert(rows);
+    },
+
     async getPrices() {
       if (!hasSupabase) return DEFAULT_PRICES.map((p, i) => ({ id: "d" + i, ...p }));
       try {

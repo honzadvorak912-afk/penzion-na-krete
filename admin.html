@@ -123,9 +123,10 @@
       document.getElementById("pwdInput").value="";
     });
 
-    function showAdmin(){
+    async function showAdmin(){
       loginView.classList.add("hidden"); adminView.classList.remove("hidden");
       if(!DB.isConfigured) document.getElementById("configWarn").classList.remove("hidden");
+      try{ await DB.seedPricesIfEmpty(); await DB.seedNotesIfEmpty(); }catch(e){ console.warn("seed:", e); }
       renderGrid(); renderPrices(); renderNotes();
     }
 
