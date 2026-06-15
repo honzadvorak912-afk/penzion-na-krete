@@ -1,21 +1,10 @@
 /* admin.css */
 
-.admin-body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+.admin-body { min-height: 100vh; display: flex; flex-direction: column; }
 
-.admin-top {
-  background: var(--ink);
-  color: #fff;
-  padding: 16px 0;
-}
+.admin-top { background: var(--ink); color: #fff; padding: 16px 0; }
 .admin-top .inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
 }
 .admin-top h1 { color: #fff; font-size: 1.2rem; margin: 0; }
 .admin-top a, .admin-top button {
@@ -27,7 +16,6 @@
 
 .admin-main { flex: 1; padding: 40px 0; }
 
-/* Přihlášení */
 .login-box {
   max-width: 380px;
   margin: 8vh auto;
@@ -38,10 +26,7 @@
   padding: 34px;
   text-align: center;
 }
-.login-box .brand-mark {
-  width: 56px; height: 56px; font-size: 26px;
-  margin: 0 auto 16px;
-}
+.login-box .brand-mark { width: 56px; height: 56px; font-size: 26px; margin: 0 auto 16px; }
 .login-box input {
   width: 100%; padding: 12px 14px; margin: 14px 0;
   border: 1px solid var(--line); border-radius: 10px; font: inherit;
@@ -51,7 +36,6 @@
 .login-box .btn { width: 100%; }
 .login-error { color: #c62828; font-size: .9rem; margin-top: 10px; min-height: 1.2em; }
 
-/* Panely */
 .panel {
   background: #fff;
   border: 1px solid var(--line);
@@ -71,17 +55,7 @@
   font-size: .92rem;
   margin-bottom: 22px;
 }
-.config-ok {
-  background: #e7f4e8;
-  border: 1px solid #b6dcb8;
-  border-radius: 10px;
-  padding: 12px 18px;
-  font-size: .9rem;
-  margin-bottom: 22px;
-  color: #2e7d32;
-}
 
-/* Upload */
 .dropzone {
   display: flex;
   flex-direction: column;
@@ -107,7 +81,6 @@
 .upload-status.ok { color: #2e7d32; }
 .upload-status.err { color: #c62828; }
 
-/* Admin galerie */
 .admin-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -135,7 +108,6 @@
   font-size: .68rem; padding: 2px 8px; border-radius: 50px;
 }
 
-/* Formuláře v panelu */
 .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
 .row .field { flex: 1; min-width: 200px; margin: 0; }
 .field label { display:block; font-weight:600; margin-bottom:6px; font-size:.9rem; }
